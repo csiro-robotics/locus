@@ -1,0 +1,11 @@
+sudo apt-get update -y
+sudo apt-get install libpcl-dev -y
+conda config --add channels conda-forge 
+conda install -c sirokujira python-pcl
+
+If 'import pcl' doesnt' work:
+cd ~/anaconda3/envs/locus_env/lib/
+ln -s libboost_system.so.1.64.0 libboost_system.so.1.54.0
+ln -s libboost_filesystem.so.1.64.0 libboost_filesystem.so.1.54.0
+ln -s libboost_thread.so.1.64.0 libboost_thread.so.1.54.0
+ln -s libboost_iostreams.so.1.64.0 libboost_iostreams.so.1.54.0

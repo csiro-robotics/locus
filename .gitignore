@@ -1,0 +1,9 @@
+*.pyc
+*.pickle
+log*
+__pycache__
+slurm*
+.vscode
+test*
+pr_results
+segmap_data
