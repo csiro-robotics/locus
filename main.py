@@ -10,6 +10,7 @@ import argparse
 sys.path.append(os.path.join(os.path.dirname(__file__), 'segmentation'))
 sys.path.append(os.path.join(os.path.dirname(__file__), 'descriptor_generation'))
 from utils.kitti_dataloader import *
+from utils.augment_scans import *
 from segmentation.extract_segments import *
 from segmentation.generate_segment_features import *
 from descriptor_generation.locus_descriptor import *
@@ -17,7 +18,10 @@ from descriptor_generation.locus_descriptor import *
 # Load params
 parser = argparse.ArgumentParser()
 parser.add_argument("--seq", help="KITTI sequence number")
+parser.add_argument("--aug", default='none', help="Scan augmentation")
+parser.add_argument("--param", default=0, type=float)
 args = parser.parse_args()
+print('Sequence: ', args.seq, ', Augmentation: ', args.aug, ', Param: ', args.param)
 
 cfg_file = open('config.yml', 'r')
 cfg_params = yaml.load(cfg_file, Loader=yaml.FullLoader)
@@ -52,9 +56,12 @@ q_start_time = time.time()
 
 for query_idx in range(num_queries):
     scan = next(scans)
+    scan = scan[:, :-1]
+    if args.aug != 'none':
+        scan = augmented_scan(scan, args.aug, args.param)
 
     # Extract segments
-    segments = extract_segments(scan[:, :-1], seg_params)
+    segments = extract_segments(scan, seg_params)
     segments_database.append(segments)
 
     # Extract segment features

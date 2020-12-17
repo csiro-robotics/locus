@@ -36,6 +36,16 @@ def distort_scan(scan, n_sigma, r_angle):
 
     return random_rotate_scan(noisy_scan, r_angle, False)
 
+def augmented_scan(scan, aug_type, param):
+    if aug_type == 'occ':
+        return occlude_scan(scan, param)
+    elif aug_type == 'rot':
+        return random_rotate_scan(scan, param)
+    elif aug_type == 'ds':
+        return downsample_scan(scan, param)
+    else:
+        return []
+
 #####################################################################################
 # Test
 #####################################################################################
@@ -44,16 +54,20 @@ def distort_scan(scan, n_sigma, r_angle):
 if __name__ == "__main__":
 
     # Set the dataset location here:
-    basedir = '/mnt/7a46b84a-7d34-49f2-b8f0-00022755f514/datasets/Kitti/dataset/'
-    sequence = '00'
+    sequence = '06'
 
     import os
     import sys
     import glob 
+    import yaml
     
     sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
     from utils.misc_utils import *
     from utils.kitti_dataloader import *
+
+    cfg_file = open('config.yml', 'r')
+    cfg_params = yaml.load(cfg_file, Loader=yaml.FullLoader)
+    basedir = cfg_params['paths']['KITTI_dataset']
     
     sequence_path = basedir + 'sequences/' + sequence + '/'
     bin_files = sorted(glob.glob(os.path.join(
@@ -65,7 +79,6 @@ if __name__ == "__main__":
         scan = scan[:, :-1]
         print('Scan ID: ', i)
         visualize_scan_open3d(scan)
-        visualize_scan_open3d(occlude_scan(scan, 90))
-        visualize_scan_open3d(random_rotate_scan(scan, np.pi, True))
-        visualize_scan_open3d(distort_scan(scan, 0.8, 0))
-        visualize_scan_open3d(downsample_scan(scan, 0.5))
+        visualize_scan_open3d(augmented_scan(scan, 'occ', 90))
+        visualize_scan_open3d(augmented_scan(scan, 'rot', np.pi))
+        visualize_scan_open3d(augmented_scan(scan, 'ds', 0.5))
