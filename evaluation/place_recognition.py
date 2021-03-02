@@ -2,18 +2,19 @@
 
 import numpy as np 
 import math
-import time
 import yaml
 import sys
 import os
 import argparse
+from tqdm import tqdm
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from utils.misc_utils import *
 from utils.kitti_dataloader import *
 
+# Load params
 parser = argparse.ArgumentParser()
-parser.add_argument("--seq", help="KITTI sequence number")
+parser.add_argument("--seq", default='00', help="KITTI sequence number")
 args = parser.parse_args()
 
 test_name = 'initial_' + args.seq
@@ -21,9 +22,7 @@ test_name = 'initial_' + args.seq
 cfg_file = open('config.yml', 'r')
 cfg_params = yaml.load(cfg_file, Loader=yaml.FullLoader)
 pr_params = cfg_params['place_recognition']
-
 data_dir = cfg_params['paths']['save_dir'] + args.seq
-
 revisit_criteria = pr_params['revisit_criteria']
 not_revisit_criteria = pr_params['not_revisit_criteria']
 skip_time = pr_params['skip_time']
@@ -32,7 +31,7 @@ thresholds = np.linspace(pr_params['cd_thresh_min'], pr_params['cd_thresh_max'],
 
 #####################################################################################
 
-locus_descriptor_database = load_pickle(data_dir + '/second_order/locus_descriptor_database.pickle')
+locus_descriptor_database = load_pickle(data_dir + '/locus_descriptor_database.pickle')
 positions_database = load_pickle(data_dir + '/positions_database.pickle')
 timestamps = load_timestamps(data_dir + '/times.txt')
 
@@ -40,8 +39,7 @@ num_queries = len(positions_database) -1
 num_thresholds = len(thresholds)
 
 # Databases of previously visited/'seen' places.
-seen_poses = []
-seen_descriptors = []
+seen_poses, seen_descriptors = [], []
 
 # Store results of evaluation.  
 num_true_positive = np.zeros(num_thresholds)
@@ -49,10 +47,9 @@ num_false_positive = np.zeros(num_thresholds)
 num_true_negative = np.zeros(num_thresholds)
 num_false_negative = np.zeros(num_thresholds)
 
-start_time = time.time()
-q_start_time = time.time()
+ret_timer = Timer()
 
-for query_idx in range(num_queries):
+for query_idx in tqdm(range(num_queries)):
     
     locus_descriptor = locus_descriptor_database[query_idx]
     query_pose = positions_database[query_idx]
@@ -88,6 +85,7 @@ for query_idx in range(num_queries):
     # Find top-1 candidate.
     nearest_idx = 0
     min_dist = math.inf
+    ret_timer.tic()
     for ith_candidate in range(nns):
         candidate_idx = ith_candidate
         if kdtree_retrieval:
@@ -100,6 +98,7 @@ for query_idx in range(num_queries):
             nearest_idx = candidate_idx
             min_dist = distance_to_query
 
+    ret_timer.toc()
     place_candidate = seen_poses[nearest_idx]
 
     is_revisit = check_if_revisit(query_pose, db_seen_poses, revisit_criteria)
@@ -122,23 +121,16 @@ for query_idx in range(num_queries):
             else:            
                 num_false_negative[thres_idx] += 1 
               
-    if (query_idx%100 == 0):
-        print('', query_idx, 'complete:', (query_idx*100)/num_queries, '%')
-        print("--- %s seconds ---" % (time.time() - q_start_time))
-        q_start_time = time.time()
-        sys.stdout.flush()  
 
-time_taken = time.time() - start_time
-print('Total time taken:')
-print("--- %s seconds ---" % time_taken)
-print('Average time per scan:')
-print("--- %s seconds ---" % (time_taken/num_queries) )
+print('Average retrieval time per scan:')
+print(f"--- {ret_timer.avg}s---")
 
-_dir = os.path.dirname(__file__) +  '/pr_results/' + test_name
-os.makedirs(_dir) 
+save_dir = cfg_params['paths']['save_dir'] + 'pr_results/' + test_name
+if not os.path.exists(save_dir):
+    os.makedirs(save_dir)
 print('Saving pickles: ', test_name)
-save_pickle(num_true_positive, _dir + '/num_true_positive.pickle')
-save_pickle(num_false_positive, _dir + '/num_false_positive.pickle')
-save_pickle(num_true_negative, _dir + '/num_true_negative.pickle')
-save_pickle(num_false_negative, _dir + '/num_false_negative.pickle')
+save_pickle(num_true_positive, save_dir + '/num_true_positive.pickle')
+save_pickle(num_false_positive, save_dir + '/num_false_positive.pickle')
+save_pickle(num_true_negative, save_dir + '/num_true_negative.pickle')
+save_pickle(num_false_negative, save_dir + '/num_false_negative.pickle')
 

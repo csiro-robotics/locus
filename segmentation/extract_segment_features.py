@@ -1,13 +1,15 @@
-"""Code for generating Segmap-CNN features for input segments. """
+"""Code for extracting Segmap-CNN features for input segments. """
 # Ref: https://github.com/ethz-asl/segmap/blob/master/segmappy/bin/segmappy_plot_roc_from_matches
 import numpy as np
 import tensorflow as tf
+tf.logging.set_verbosity(tf.logging.ERROR)
 
 from segmappy.core.config import *
 from segmappy.core.dataset import *
 from segmappy.core.preprocessor import *
 from segmappy.core.generator import *
 from segmappy.tools.classifiertools import get_default_preprocessor
+
 
 # read config file
 configfile = "default_training.ini"

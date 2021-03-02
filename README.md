@@ -25,23 +25,8 @@ pip install -r requirements.txt
 ```
 - Download the [KITTI odometry dataset](http://www.cvlibs.net/datasets/kitti/eval_odometry.php) and set the path in ```config.yml```.
 
-### Segmentation
-- Extract and save Euclidean point segments: 
-```bash
-python ./segmentation/extract_segments.py 
-```
-- Generate and save SegMap-CNN features for all segments: 
-```bash
-python ./segmentation/generate_segment_features.py 
-```
 
 ### Descriptor Generation
-- Generate and save Locus descriptor:
-```bash
-python ./descriptor_generation/locus_descriptor.py 
-```
-
-### Online segmentation and description
 - Segment and generate Locus descriptor for each scan in selected a sequence:
 ```bash
 python main.py --seq '06'
@@ -55,6 +40,16 @@ python ./evaluation/place_recognition.py  --seq  '06'
 - Evaluation of place-recognition performance using Precision-Recall curves (multiple sequences):  
 ```bash
 python ./evaluation/pr_curve.py 
+```
+
+### Individual modules
+- Additional scripts for testing individual modules. 
+```bash
+python ./segmentation/extract_segments.py # Extract and save Euclidean point segments
+python ./segmentation/extract_segment_features.py # Extract and save SegMap-CNN features for given segments
+python ./descriptor_generation/spatial_pooling.py # Generate and save spatial features for given segments 
+python ./descriptor_generation/temporal_pooling.py # Generate and save spatial features for given segments 
+python ./descriptor_generation/locus_descriptor.py # Generate and save Locus descriptor for given segments 
 ```
 
 ## Citation

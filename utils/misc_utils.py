@@ -2,6 +2,7 @@
 import numpy as np
 from numpy import dot
 from numpy.linalg import norm
+import time
 import pickle
 
 #####################################################################################
@@ -71,6 +72,47 @@ def homogeneous_to_euclidean(h_point):
     e_point[1] = h_point[2] / h_point[3]
     e_point[2] = h_point[1] / h_point[3]
     return e_point
+
+#####################################################################################
+# Timing
+
+class Timer(object):
+  """A simple timer."""
+  # Ref: https://github.com/chrischoy/FCGF/blob/master/lib/timer.py
+
+  def __init__(self, binary_fn=None, init_val=0):
+    self.total_time = 0.
+    self.calls = 0
+    self.start_time = 0.
+    self.diff = 0.
+    self.binary_fn = binary_fn
+    self.tmp = init_val
+
+  def reset(self):
+    self.total_time = 0
+    self.calls = 0
+    self.start_time = 0
+    self.diff = 0
+
+  @property
+  def avg(self):
+    return self.total_time / self.calls
+
+  def tic(self):
+    # using time.time instead of time.clock because time time.clock
+    # does not normalize for multithreading
+    self.start_time = time.time()
+
+  def toc(self, average=True):
+    self.diff = time.time() - self.start_time
+    self.total_time += self.diff
+    self.calls += 1
+    if self.binary_fn:
+      self.tmp = self.binary_fn(self.tmp, self.diff)
+    if average:
+      return self.avg
+    else:
+      return self.diff
 
 #####################################################################################
 # Config
