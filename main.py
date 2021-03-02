@@ -4,20 +4,22 @@ import sys
 import os
 import glob
 import yaml
-import time
 import argparse
+from tqdm import tqdm
 
 sys.path.append(os.path.join(os.path.dirname(__file__), 'segmentation'))
 sys.path.append(os.path.join(os.path.dirname(__file__), 'descriptor_generation'))
 from utils.kitti_dataloader import *
 from utils.augment_scans import *
 from segmentation.extract_segments import *
-from segmentation.generate_segment_features import *
+from segmentation.extract_segment_features import *
 from descriptor_generation.locus_descriptor import *
+
+seg_timer, feat_timer, desc_timer = Timer(), Timer(), Timer()
 
 # Load params
 parser = argparse.ArgumentParser()
-parser.add_argument("--seq", help="KITTI sequence number")
+parser.add_argument("--seq", default='00', help="KITTI sequence number")
 parser.add_argument("--aug", default='none', help="Scan augmentation")
 parser.add_argument("--param", default=0, type=float)
 args = parser.parse_args()
@@ -42,48 +44,43 @@ rel_transforms = get_delta_pose(transforms)
 
 # Setup database variables
 num_queries = len(rel_transforms)
-segments_database = []
-features_database = []
-seg_corres_database = []
-locus_descriptor_database = []
+segments_database, features_database  = [], []
+seg_corres_database, locus_descriptor_database = [], []
 database_dict = {'segments_database': segments_database,
                     'features_database': features_database,
                     'seg_corres_database': seg_corres_database,
                     'rel_transforms': rel_transforms} 
 
-start_time = time.time()
-q_start_time = time.time()
 
-for query_idx in range(num_queries):
+for query_idx in tqdm(range(num_queries)):
     scan = next(scans)
     scan = scan[:, :-1]
     if args.aug != 'none':
         scan = augmented_scan(scan, args.aug, args.param)
 
     # Extract segments
+    seg_timer.tic()
     segments = extract_segments(scan, seg_params)
     segments_database.append(segments)
+    seg_timer.toc()
 
     # Extract segment features
+    feat_timer.tic()
     features = get_segment_features(segments)
     features_database.append(features)
+    feat_timer.toc()
 
     # Generate 'Locus' global descriptor
+    desc_timer.tic()
     locus_descriptor = get_locus_descriptor(query_idx, desc_params, database_dict)
     locus_descriptor_database.append(locus_descriptor)
+    desc_timer.toc()
 
-    if (query_idx % 100 == 0):
-        print('', query_idx, 'complete:', (query_idx*100)/num_queries, '%')
-        print("--- %s seconds ---" % (time.time() - q_start_time))
-        q_start_time = time.time()
-        sys.stdout.flush()  
-
-time_taken = time.time() - start_time
-print('Total time taken:')
-print("--- %s seconds ---" % time_taken)
 print('Average time per scan:')
-print("--- %s seconds ---" % (time_taken/num_queries) )
+print(f"--- seg: {seg_timer.avg}s, feat: {feat_timer.avg}s, desc: {desc_timer.avg}s ---")
 
 save_dir = cfg_params['paths']['save_dir'] + args.seq
+if not os.path.exists(save_dir):
+    os.makedirs(save_dir)
 save_pickle(locus_descriptor_database, save_dir +
-            '/second_order/locus_descriptor_database.pickle')
+            '/locus_descriptor_database.pickle')

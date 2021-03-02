@@ -9,7 +9,9 @@ import yaml
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from utils.misc_utils import *
 
-data_dir = os.path.dirname(__file__) +  '/pr_results/' 
+cfg_file = open('config.yml', 'r')
+cfg_params = yaml.load(cfg_file, Loader=yaml.FullLoader)
+data_dir = cfg_params['paths']['save_dir'] + 'pr_results/' 
 
 cfg_file = open('config.yml', 'r')
 cfg_params = yaml.load(cfg_file, Loader=yaml.FullLoader)
