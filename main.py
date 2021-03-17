@@ -19,11 +19,11 @@ seg_timer, feat_timer, desc_timer = Timer(), Timer(), Timer()
 
 # Load params
 parser = argparse.ArgumentParser()
-parser.add_argument("--seq", default='00', help="KITTI sequence number")
-parser.add_argument("--aug", default='none', help="Scan augmentation")
-parser.add_argument("--param", default=0, type=float)
+parser.add_argument("--seq", default='02', help="KITTI sequence number")
+parser.add_argument("--aug_type", default='none', help="Scan augmentation type ['occ', 'rot', 'ds']")
+parser.add_argument("--aug_param", default=0, type=float, help="Scan augmentation parameter")
 args = parser.parse_args()
-print('Sequence: ', args.seq, ', Augmentation: ', args.aug, ', Param: ', args.param)
+print('Sequence: ', args.seq, ', Augmentation: ', args.aug_type, ', Param: ', args.aug_param)
 
 cfg_file = open('config.yml', 'r')
 cfg_params = yaml.load(cfg_file, Loader=yaml.FullLoader)
@@ -38,7 +38,7 @@ bin_files = sorted(glob.glob(os.path.join(
     sequence_path, 'velodyne', '*.bin')))
 scans = yield_bin_scans(bin_files)    
 
-transforms, x, y, z = load_poses_from_txt(sequence_path + 'poses.txt')
+transforms, _ = load_poses_from_txt(sequence_path + 'poses.txt')
 rel_transforms = get_delta_pose(transforms)
 
 
@@ -55,8 +55,8 @@ database_dict = {'segments_database': segments_database,
 for query_idx in tqdm(range(num_queries)):
     scan = next(scans)
     scan = scan[:, :-1]
-    if args.aug != 'none':
-        scan = augmented_scan(scan, args.aug, args.param)
+    if args.aug_type != 'none':
+        scan = augmented_scan(scan, args.aug_type, args.aug_param)
 
     # Extract segments
     seg_timer.tic()

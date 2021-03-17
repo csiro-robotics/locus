@@ -10,16 +10,16 @@ from temporal_pooling import *
 def get_locus_descriptor(idx, config_dict, database_dict):
 
     features = database_dict['features_database'][idx]
-    feature_dim = np.shape(features)[1]
-    
-    if len(features) < 7:
-        return []
+    feature_dim = 64 #np.shape(features)[1]
 
     # Get spatially and temporally pooled features. 
     spatial_features = get_spatial_features(
         idx, config_dict['spatial_topk'], database_dict)
     temporal_features = get_temporal_features(
         idx, config_dict['n_frames_max'], [], database_dict)  
+
+    if spatial_features == [] or temporal_features == []:
+        return []
 
     # Second order pooling (O2P) of complementary features.
     locus_matrix = np.zeros((feature_dim, feature_dim))
@@ -77,7 +77,7 @@ if __name__ == "__main__":
     desc_params = cfg_params['descriptor_generation']
 
     poses_file = cfg_params['paths']['KITTI_dataset'] + 'sequences/' + seq + '/poses.txt'
-    transforms, x, y, z = load_poses_from_txt(poses_file)
+    transforms, _ = load_poses_from_txt(poses_file)
     rel_transforms = get_delta_pose(transforms)
 
     data_dir = cfg_params['paths']['save_dir'] + seq

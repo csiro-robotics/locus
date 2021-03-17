@@ -30,4 +30,4 @@ pr_curve:
 
 paths:
   KITTI_dataset: '/mnt/088A6CBB8A6CA742/Datasets/Kitti/dataset/'
-  save_dir: '/mnt/bracewell/locus_data/' 
+  save_dir: '/mnt/088A6CBB8A6CA742/locus_data/' 

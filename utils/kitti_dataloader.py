@@ -23,9 +23,7 @@ def load_poses_from_txt(file_name):
     s = f.readlines()
     f.close()
     transforms = {}
-    x = []
-    y = []
-    z = []
+    positions = []
     for cnt, line in enumerate(s):
         P = np.eye(4)
         line_split = [float(i) for i in line.split(" ") if i != ""]
@@ -38,10 +36,8 @@ def load_poses_from_txt(file_name):
         else:
             frame_idx = cnt
         transforms[frame_idx] = P
-        x.append(P[0, 3])
-        y.append(P[2, 3])
-        z.append(P[1, 3])
-    return transforms, x, y, z
+        positions.append([P[0, 3], P[2, 3], P[1, 3]])
+    return transforms, np.asarray(positions)
 
 
 def get_delta_pose(transforms):
@@ -117,7 +113,7 @@ def load_timestamps(file_name):
 if __name__ == "__main__":
 
     # Set the dataset location here:
-    basedir = '/mnt/7a46b84a-7d34-49f2-b8f0-00022755f514/datasets/Kitti/dataset/'
+    basedir = '/mnt/088A6CBB8A6CA742/Datasets/Kitti/dataset/'
 
     ##################
     # Test poses
@@ -131,11 +127,11 @@ if __name__ == "__main__":
         sequence_path = basedir + 'sequences/' + sequence + '/'
         poses_file = sorted(
             glob.glob(os.path.join(sequence_path, 'poses.txt')))
-        transforms, x, y, z = load_poses_from_txt(poses_file[0])
-        print('seq: ', sequence, 'len', len(x))
+        _, positions = load_poses_from_txt(poses_file[0])
+        print('seq: ', sequence, 'len', len(positions))
 
-        axs[i//6, i % 6].plot(x, y)
-        axs[i//6, i % 6].set_title('seq: ' + sequence + 'len' + str(len(x)))
+        axs[i//6, i % 6].plot(positions[:,0], positions[:,1])
+        axs[i//6, i % 6].set_title('seq: ' + sequence + 'len' + str(len(positions)))
 
     plt.show()
 

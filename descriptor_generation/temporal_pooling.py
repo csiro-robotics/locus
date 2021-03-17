@@ -136,7 +136,7 @@ if __name__ == "__main__":
     n_frames_max = 3
 
     poses_file = base_dir + 'datasets/Kitti/dataset/sequences/' + seq + '/poses.txt'
-    transforms, x, y, z = load_poses_from_txt(poses_file)
+    transforms, _ = load_poses_from_txt(poses_file)
     rel_transforms = get_delta_pose(transforms)
 
     data_dir = base_dir + 'seg_test/kitti/' + seq

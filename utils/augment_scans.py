@@ -4,20 +4,22 @@ import numpy as np
 import open3d as o3d
 
 def occlude_scan(scan, angle):
-    # Remove points within a sector of fixed angle and random heading direction.
+    # Remove points within a sector of fixed angle (degrees) and random heading direction.
     thetas = (180/np.pi) * np.arctan2(scan[:,1],scan[:,0])
     heading = (180-angle/2)*np.random.uniform(-1,1)
     occ_scan = np.vstack((scan[thetas < (heading - angle/2)] , scan[thetas > (heading + angle/2)]))
     return occ_scan
 
 def random_rotate_scan(scan, r_angle, is_random = True):
-    # Rotate about z-axis. 
+    # If is_random = True: Rotate about z-axis by random angle upto 'r_angle'. 
+    # Else: Rotate about z-axis by fixed angle 'r_angle'.
+    r_angle = (np.pi/180) * r_angle 
     if is_random:
         r_angle = r_angle*np.random.uniform()
     cos_angle = np.cos(r_angle)
     sin_angle = np.sin(r_angle)
-    rot_matrix = np.array([[cos_angle, sin_angle, 0],
-                                [-sin_angle, cos_angle, 0],
+    rot_matrix = np.array([[cos_angle, -sin_angle, 0],
+                                [sin_angle, cos_angle, 0],
                                 [0,             0,      1]])
     augmented_scan = np.dot(scan, rot_matrix)
 

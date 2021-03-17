@@ -1,4 +1,6 @@
 """ Online retrieval-based place-recognition using pre-computed global descriptors. """
+# Based on: https://github.com/irapkaist/scancontext/blob/master/fast_evaluator/main.m
+# With updated evaluation criterea as set in: config.yaml->place_recognition
 
 import numpy as np 
 import math
@@ -22,7 +24,9 @@ test_name = 'initial_' + args.seq
 cfg_file = open('config.yml', 'r')
 cfg_params = yaml.load(cfg_file, Loader=yaml.FullLoader)
 pr_params = cfg_params['place_recognition']
-data_dir = cfg_params['paths']['save_dir'] + args.seq
+desc_dir = cfg_params['paths']['save_dir'] + args.seq
+basedir = cfg_params['paths']['KITTI_dataset']
+sequence_path = basedir + 'sequences/' + args.seq + '/'
 revisit_criteria = pr_params['revisit_criteria']
 not_revisit_criteria = pr_params['not_revisit_criteria']
 skip_time = pr_params['skip_time']
@@ -31,9 +35,9 @@ thresholds = np.linspace(pr_params['cd_thresh_min'], pr_params['cd_thresh_max'],
 
 #####################################################################################
 
-locus_descriptor_database = load_pickle(data_dir + '/locus_descriptor_database.pickle')
-positions_database = load_pickle(data_dir + '/positions_database.pickle')
-timestamps = load_timestamps(data_dir + '/times.txt')
+locus_descriptor_database = load_pickle(desc_dir + '/locus_descriptor_database.pickle')
+_, positions_database = load_poses_from_txt(sequence_path + 'poses.txt')
+timestamps = load_timestamps(sequence_path + '/times.txt')
 
 num_queries = len(positions_database) -1
 num_thresholds = len(thresholds)

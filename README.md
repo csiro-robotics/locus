@@ -27,23 +27,27 @@ pip install -r requirements.txt
 
 
 ### Descriptor Generation
-- Segment and generate Locus descriptor for each scan in selected a sequence:
+Segment and generate Locus descriptor for each scan in selected a sequence:
 ```bash
 python main.py --seq '06'
 ```
+The following flags can be used with ```main.py```:
+- ```--seq```: KITTI dataset sequence number.
+- ```--aug_type```: Scan augmentation type (optional for robustness tests).
+- ```--aug_param```: Parameter corresponding to above augmentation. 
 
 ### Evaluation
-- Sequence-wise place-recognition using extracted descriptors:
+Sequence-wise place-recognition using extracted descriptors:
 ```bash
 python ./evaluation/place_recognition.py  --seq  '06' 
 ```
-- Evaluation of place-recognition performance using Precision-Recall curves (multiple sequences):  
+Evaluation of place-recognition performance using Precision-Recall curves (multiple sequences):  
 ```bash
 python ./evaluation/pr_curve.py 
 ```
 
 ### Individual modules
-- Additional scripts for testing individual modules. 
+Additional scripts for testing individual modules. 
 ```bash
 python ./segmentation/extract_segments.py # Extract and save Euclidean point segments
 python ./segmentation/extract_segment_features.py # Extract and save SegMap-CNN features for given segments
@@ -57,10 +61,11 @@ python ./descriptor_generation/locus_descriptor.py # Generate and save Locus des
 If you find this work usefull in your research, please consider citing:
 
 ```
-@article{vidanapathirana2020locus,
+@inproceedings{vid2021locus,
   title={Locus: LiDAR-based Place Recognition using Spatiotemporal Higher-Order Pooling},
   author={Vidanapathirana, Kavisha and Moghadam, Peyman and Harwood, Ben and Zhao, Muming and Sridharan, Sridha and Fookes, Clinton},
-  year={2020},
+  booktitle={IEEE International Conference on Robotics and Automation (ICRA)},
+  year={2021},
   eprint={arXiv preprint arXiv:2011.14497}
 }
 ```
