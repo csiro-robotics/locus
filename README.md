@@ -46,8 +46,8 @@ Evaluation of place-recognition performance using Precision-Recall curves (multi
 python ./evaluation/pr_curve.py 
 ```
 
-### Individual modules
-Additional scripts for testing individual modules. 
+### Additional scripts
+#### Testing individual modules: 
 ```bash
 python ./segmentation/extract_segments.py # Extract and save Euclidean point segments
 python ./segmentation/extract_segment_features.py # Extract and save SegMap-CNN features for given segments
@@ -55,6 +55,14 @@ python ./descriptor_generation/spatial_pooling.py # Generate and save spatial fe
 python ./descriptor_generation/temporal_pooling.py # Generate and save spatial features for given segments 
 python ./descriptor_generation/locus_descriptor.py # Generate and save Locus descriptor for given segments 
 ```
+
+#### Robustness tests:
+Extract descriptors from scans of select augmentation:
+```bash
+python main.py --seq '06' --aug_type 'rot' 180 # Rotate about z-axis by random angle between 0-180 degrees. 
+python main.py --seq '06' --aug_type 'occ' 30 # Occlude sector of 30 degrees about random heading. 
+```
+Evaluation is done as before. 
 
 ## Citation
 

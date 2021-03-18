@@ -8,6 +8,16 @@ import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from utils.kitti_dataloader import visualize_scan_open3d
 
+def extract_cluster_indices(cloud_filtered, seg_params):
+    tree = cloud_filtered.make_kdtree()      
+    ec = cloud_filtered.make_EuclideanClusterExtraction()
+    ec.set_ClusterTolerance(seg_params['c_tolerence']) 
+    ec.set_MinClusterSize(seg_params['c_min_size'])
+    ec.set_MaxClusterSize(seg_params['c_max_size'])
+    ec.set_SearchMethod(tree)
+    cluster_indices = ec.Extract()
+    return cluster_indices    
+
 def extract_segments(scan, seg_params):
     if seg_params['visualize']:
         visualize_scan_open3d(scan)
@@ -43,13 +53,8 @@ def extract_segments(scan, seg_params):
         visualize_scan_open3d(cloud_filtered)
 
     # Euclidean Cluster Extraction
-    tree = cloud_filtered.make_kdtree()      
-    ec = cloud_filtered.make_EuclideanClusterExtraction()
-    ec.set_ClusterTolerance(seg_params['c_tolerence']) 
-    ec.set_MinClusterSize(seg_params['c_min_size'])
-    ec.set_MaxClusterSize(seg_params['c_max_size'])
-    ec.set_SearchMethod(tree)
-    cluster_indices = ec.Extract()
+    cluster_indices = extract_cluster_indices(cloud_filtered, seg_params)
+
     if seg_params['visualize']:
         print('cluster_indices : ' , np.shape(cluster_indices))
 
@@ -66,11 +71,11 @@ def extract_segments(scan, seg_params):
             points[k][1] = cloud_filtered[indice][1]
             points[k][2] = cloud_filtered[indice][2]
 
-        # Additional filtering step to remove ground-plane segments
+        # Additional filtering step to remove flat(ground-plane) segments
         x_diff = (max(points[:,0]) - min(points[:,0]))
         y_diff = (max(points[:,1]) - min(points[:,1]))
         z_diff = (max(points[:,2]) - min(points[:,2]))
-        if max(x_diff,y_diff)/z_diff < seg_params['vertical_ratio']:
+        if (not seg_params['filter_flat_seg']) or (max(x_diff,y_diff)/z_diff < seg_params['horizontal_ratio']):
             segments.append(points)
             colour = np.random.random_sample((3))
             if init:
@@ -86,6 +91,19 @@ def extract_segments(scan, seg_params):
     if seg_params['visualize']:
         visualize_scan_open3d(points_database, colours_database)    
 
+    return segments
+
+def get_segments(scan, seg_params):
+    segments = extract_segments(scan, seg_params)
+
+    # Handling rare degenerate scenes
+    c_tolerence = seg_params['c_tolerence']
+    while seg_params['enforce_min_seg_count'] and len(segments) < seg_params['min_seg_count']: 
+        seg_params['c_tolerence'] -= 0.01
+        if seg_params['c_tolerence'] < 0.01:
+            break
+        segments = extract_segments(scan, seg_params)
+    seg_params['c_tolerence'] = c_tolerence
     return segments
 
 #####################################################################################

@@ -19,6 +19,7 @@ def get_locus_descriptor(idx, config_dict, database_dict):
         idx, config_dict['n_frames_max'], [], database_dict)  
 
     if spatial_features == [] or temporal_features == []:
+        print('Degenerate scene. ID: ', idx)
         return []
 
     # Second order pooling (O2P) of complementary features.

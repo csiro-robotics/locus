@@ -60,7 +60,7 @@ for query_idx in tqdm(range(num_queries)):
 
     # Extract segments
     seg_timer.tic()
-    segments = extract_segments(scan, seg_params)
+    segments = get_segments(scan, seg_params)
     segments_database.append(segments)
     seg_timer.toc()
 

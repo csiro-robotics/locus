@@ -5,8 +5,11 @@ segmentation:
   c_min_size: 100 # Min points per segment.
   c_max_size: 15000 # Max points per segment.
   c_tolerence: 0.2 # Lower values -> object becomes multiple clusters.
-  ds_factor: 0.01 # Downsample voxel size. If <= 0.01, skip downsample. 
-  vertical_ratio: 15 # Identify ground-plane segments. Higher = flatter segment.
+  ds_factor: 0.01 # Downsample voxel size. If <= 0.01, skip downsample.
+  filter_flat_seg: False # Filter out flat segments.
+  horizontal_ratio: 15 # Identify flat segments. Higher = flatter segment.
+  enforce_min_seg_count: False # Ensure extraction of a minimum number of segments. 
+  min_seg_count: 7 # Minimum number of segments (if above is True).
   visualize: True # Visualize all intermediate steps.
 
 descriptor_generation:
@@ -22,7 +25,7 @@ place_recognition:
   kdtree_retrieval: False # Use KDTree or exhaustive retrieval.
   cd_thresh_min: 0.1 # Thresholds on cosine-distance to top-1. For evaluation. 
   cd_thresh_max: 0.5
-  num_thresholds: 200 # Number of thresholds. Number of point on PR curve. 
+  num_thresholds: 200 # Number of thresholds. Number of points on PR curve. 
 
 pr_curve:
   log_axis: False # See PR curve with log axis.
