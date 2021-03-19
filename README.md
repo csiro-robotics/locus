@@ -47,22 +47,27 @@ python ./evaluation/pr_curve.py
 ```
 
 ### Additional scripts
-#### Testing individual modules: 
-```bash
-python ./segmentation/extract_segments.py # Extract and save Euclidean point segments
-python ./segmentation/extract_segment_features.py # Extract and save SegMap-CNN features for given segments
-python ./descriptor_generation/spatial_pooling.py # Generate and save spatial features for given segments 
-python ./descriptor_generation/temporal_pooling.py # Generate and save spatial features for given segments 
-python ./descriptor_generation/locus_descriptor.py # Generate and save Locus descriptor for given segments 
-```
 
 #### Robustness tests:
-Extract descriptors from scans of select augmentation:
+Code of the robustness tests carried out in section V.C in paper. 
+Extract Locus descriptors from scans of select augmentation:
 ```bash
 python main.py --seq '06' --aug_type 'rot' --aug_param 180 # Rotate about z-axis by random angle between 0-180 degrees. 
-python main.py --seq '06' --aug_type 'occ' --aug_param 30 # Occlude sector of 30 degrees about random heading. 
+python main.py --seq '06' --aug_type 'occ' --aug_param 90 # Occlude sector of 90 degrees about random heading. 
 ```
-Evaluation is done as before. 
+Evaluation is done as before. For vizualization, set ```config.yml->segmentation->visualize``` to ```True```.
+
+<img src="./utils/docs/robustness_tests.png" width="400">
+
+#### Testing individual modules: 
+
+```bash
+python ./segmentation/extract_segments.py # Extract and save Euclidean segments (S).
+python ./segmentation/extract_segment_features.py # Extract and save SegMap-CNN features (Fa) for given S.
+python ./descriptor_generation/spatial_pooling.py # Generate and save spatial segment features for given S and Fa.
+python ./descriptor_generation/temporal_pooling.py # Generate and save temporal segment features for given S and Fa.
+python ./descriptor_generation/locus_descriptor.py # Generate and save Locus global descriptor using above.
+```
 
 ## Citation
 

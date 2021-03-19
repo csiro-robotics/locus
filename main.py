@@ -83,6 +83,6 @@ if not os.path.exists(save_dir):
     os.makedirs(save_dir)
 desc_file_name = '/locus_descriptor_' + desc_params['fb_mode']
 if args.aug_type != 'none':
-    desc_file_name = desc_file_name + '_' + args.aug_type + str(args.aug_param)
+    desc_file_name = desc_file_name + '_' + args.aug_type + str(int(args.aug_param))
 save_pickle(locus_descriptor_database, save_dir +
             desc_file_name + '.pickle')
