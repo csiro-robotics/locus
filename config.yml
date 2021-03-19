@@ -10,7 +10,7 @@ segmentation:
   horizontal_ratio: 15 # Identify flat segments. Higher = flatter segment.
   enforce_min_seg_count: False # Ensure extraction of a minimum number of segments. 
   min_seg_count: 7 # Minimum number of segments (if above is True).
-  visualize: True # Visualize all intermediate steps.
+  visualize: False # Visualize all intermediate steps.
 
 descriptor_generation:
   n_frames_max: 3 # Number of frames to consider in temporal pooling.

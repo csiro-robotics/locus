@@ -1,7 +1,7 @@
 # Locus
 
 
-This repository is an official implementation of the paper: [Locus: LiDAR-based Place Recognition using Spatiotemporal Higher-Order Pooling](https://arxiv.org/abs/2011.14497)
+This repository is an open-source implementation of the ICRA 2021 paper: [Locus: LiDAR-based Place Recognition using Spatiotemporal Higher-Order Pooling](https://arxiv.org/abs/2011.14497)
 
 ## Method overview.
 
@@ -59,8 +59,8 @@ python ./descriptor_generation/locus_descriptor.py # Generate and save Locus des
 #### Robustness tests:
 Extract descriptors from scans of select augmentation:
 ```bash
-python main.py --seq '06' --aug_type 'rot' 180 # Rotate about z-axis by random angle between 0-180 degrees. 
-python main.py --seq '06' --aug_type 'occ' 30 # Occlude sector of 30 degrees about random heading. 
+python main.py --seq '06' --aug_type 'rot' --aug_param 180 # Rotate about z-axis by random angle between 0-180 degrees. 
+python main.py --seq '06' --aug_type 'occ' --aug_param 30 # Occlude sector of 30 degrees about random heading. 
 ```
 Evaluation is done as before. 
 

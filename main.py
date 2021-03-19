@@ -29,7 +29,6 @@ cfg_file = open('config.yml', 'r')
 cfg_params = yaml.load(cfg_file, Loader=yaml.FullLoader)
 desc_params = cfg_params['descriptor_generation']
 seg_params = cfg_params['segmentation']
-seg_params['visualize'] = False
 
 # Load data
 basedir = cfg_params['paths']['KITTI_dataset']
@@ -82,5 +81,8 @@ print(f"--- seg: {seg_timer.avg}s, feat: {feat_timer.avg}s, desc: {desc_timer.av
 save_dir = cfg_params['paths']['save_dir'] + args.seq
 if not os.path.exists(save_dir):
     os.makedirs(save_dir)
+desc_file_name = '/locus_descriptor_' + desc_params['fb_mode']
+if args.aug_type != 'none':
+    desc_file_name = desc_file_name + '_' + args.aug_type + str(args.aug_param)
 save_pickle(locus_descriptor_database, save_dir +
-            '/locus_descriptor_database.pickle')
+            desc_file_name + '.pickle')

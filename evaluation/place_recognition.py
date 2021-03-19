@@ -32,10 +32,11 @@ not_revisit_criteria = pr_params['not_revisit_criteria']
 skip_time = pr_params['skip_time']
 kdtree_retrieval = pr_params['kdtree_retrieval']
 thresholds = np.linspace(pr_params['cd_thresh_min'], pr_params['cd_thresh_max'], pr_params['num_thresholds'])
+desc_file_name = '/locus_descriptor_' + cfg_params['descriptor_generation']['fb_mode'] + '.pickle'
 
 #####################################################################################
 
-locus_descriptor_database = load_pickle(desc_dir + '/locus_descriptor_database.pickle')
+locus_descriptor_database = load_pickle(desc_dir + desc_file_name)
 _, positions_database = load_poses_from_txt(sequence_path + 'poses.txt')
 timestamps = load_timestamps(sequence_path + '/times.txt')
 
