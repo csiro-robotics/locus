@@ -12,6 +12,7 @@ This repository is an open-source implementation of the ICRA 2021 paper: [Locus:
 ## Usage
 
 ### Set up environment
+This project has been tested on Ubuntu 18.04 (with pcl 1.8.1, python-pcl 0.3.0, open3d 0.10 and tensorflow 1.8). 
 - Create [conda](https://docs.conda.io/en/latest/) environment with [Open3D](http://www.open3d.org/docs/release/) and [tensorflow-1.8](https://www.tensorflow.org/) with python 3.6:
 ```bash
 conda create --name locus_env python=3.6
