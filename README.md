@@ -27,7 +27,7 @@ pip install -r requirements.txt
 
 
 ### Descriptor Generation
-Segment and generate Locus descriptor for each scan in selected a sequence:
+Segment and generate Locus descriptor for each scan in a selected sequence (e.g., KITTI sequence 06):
 ```bash
 python main.py --seq '06'
 ```
