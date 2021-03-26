@@ -1,9 +1,10 @@
 # Locus
 
 
-This repository is an open-source implementation of the ICRA 2021 paper: [Locus: LiDAR-based Place Recognition using Spatiotemporal Higher-Order Pooling](https://arxiv.org/abs/2011.14497)
+This repository is an open-source implementation of the ICRA 2021 paper: [Locus: LiDAR-based Place Recognition using Spatiotemporal Higher-Order Pooling](https://arxiv.org/abs/2011.14497).
 
 ## Method overview.
+*Locus* is a global descriptor for large-scale place recognition using sequential 3D LiDAR point clouds. It encodes topological relationships and temporal consistency of scene components to obtain a discriminative and view-point invariant scene representation.
 
 ![](./utils/docs/pipeline.png)
 
@@ -12,14 +13,14 @@ This repository is an open-source implementation of the ICRA 2021 paper: [Locus:
 ## Usage
 
 ### Set up environment
-This project has been tested on Ubuntu 18.04 (with pcl 1.8.1, python-pcl 0.3.0, open3d 0.10 and tensorflow 1.8). 
-- Create [conda](https://docs.conda.io/en/latest/) environment with [Open3D](http://www.open3d.org/docs/release/) and [tensorflow-1.8](https://www.tensorflow.org/) with python 3.6:
+This project has been tested on Ubuntu 18.04 (with [Open3D](http://www.open3d.org/docs/release/) 0.11, [tensorflow](https://www.tensorflow.org/) 1.8.0, [pcl](https://pointclouds.org/) 1.8.1 and [python-pcl](https://github.com/strawlab/python-pcl) 0.3.0). Set up the requirments as follows:
+- Create [conda](https://docs.conda.io/en/latest/) environment with open3d and tensorflow-1.8 with python 3.6:
 ```bash
 conda create --name locus_env python=3.6
 conda activate locus_env
 pip install -r requirements.txt
 ```
-- Set up [python-pcl](https://github.com/strawlab/python-pcl). See ```utils/setup_python_pcl.txt```
+- Set up python-pcl. See ```utils/setup_python_pcl.txt```. For further instructions, see [here](https://github.com/strawlab/python-pcl). 
 - Segment feature extraction uses the pre-trained model from [ethz-asl/segmap](https://github.com/ethz-asl/segmap). Download and copy the relevant content in [segmap_data](http://robotics.ethz.ch/~asl-datasets/segmap/segmap_data/) into ```~/.segmap/```:
 ```bash
 ./utils/get_segmap_data.bash
