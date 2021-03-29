@@ -116,8 +116,9 @@ if __name__ == "__main__":
     import glob 
     import yaml
     from utils.kitti_dataloader import yield_bin_scans
+    from utils.misc_utils import save_pickle
     
-    seq = '00'
+    seq = '06'
 
     cfg_file = open('config.yml', 'r')
     cfg_params = yaml.load(cfg_file, Loader=yaml.FullLoader)
