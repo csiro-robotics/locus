@@ -57,20 +57,15 @@ def is_nan(x):
 
 
 def euclidean_to_homogeneous(e_point):
-    """ y and z are switched to account for transfrom in KITTI data """
-    h_point = np.ones(4)
-    h_point[0] = e_point[0]
-    h_point[1] = e_point[2]
-    h_point[2] = e_point[1]
+    """ Coversion from Eclidean coordinates to Homogeneous """
+    h_point = np.concatenate([e_point,[1]])
     return h_point
 
 
 def homogeneous_to_euclidean(h_point):
-    """ y and z are switched to account for transfrom in KITTI data """
-    e_point = np.ones(3)
-    e_point[0] = h_point[0] / h_point[3]
-    e_point[1] = h_point[2] / h_point[3]
-    e_point[2] = h_point[1] / h_point[3]
+    """ Coversion from Homogeneous coordinates to Eclidean """
+    e_point = h_point/ h_point[3]
+    e_point = e_point[:3]
     return e_point
 
 #####################################################################################
