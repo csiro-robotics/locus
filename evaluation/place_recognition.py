@@ -17,6 +17,8 @@ from utils.kitti_dataloader import *
 # Load params
 parser = argparse.ArgumentParser()
 parser.add_argument("--seq", default='00', help="KITTI sequence number")
+parser.add_argument("--aug_type", default='none', help="Scan augmentation type ['occ', 'rot', 'ds']")
+parser.add_argument("--aug_param", default=0, type=float, help="Scan augmentation parameter")
 args = parser.parse_args()
 
 test_name = 'initial_' + args.seq
@@ -32,11 +34,14 @@ not_revisit_criteria = pr_params['not_revisit_criteria']
 skip_time = pr_params['skip_time']
 kdtree_retrieval = pr_params['kdtree_retrieval']
 thresholds = np.linspace(pr_params['cd_thresh_min'], pr_params['cd_thresh_max'], pr_params['num_thresholds'])
-desc_file_name = '/locus_descriptor_' + cfg_params['descriptor_generation']['fb_mode'] + '.pickle'
+desc_file_name = '/locus_descriptor_' + cfg_params['descriptor_generation']['fb_mode']
+if args.aug_type != 'none':
+    desc_file_name += '_' + args.aug_type + str(int(args.aug_param))
+    test_name = args.aug_type + str(int(args.aug_param)) + '_' + args.seq
 
 #####################################################################################
 
-locus_descriptor_database = load_pickle(desc_dir + desc_file_name)
+locus_descriptor_database = load_pickle(desc_dir + desc_file_name + '.pickle')
 _, positions_database = load_poses_from_txt(sequence_path + 'poses.txt')
 timestamps = load_timestamps(sequence_path + '/times.txt')
 

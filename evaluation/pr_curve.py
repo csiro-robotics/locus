@@ -17,13 +17,14 @@ cfg_file = open('config.yml', 'r')
 cfg_params = yaml.load(cfg_file, Loader=yaml.FullLoader)
 log_axis = cfg_params['pr_curve']['log_axis']
 introspect = cfg_params['pr_curve']['introspection_table']
+test_name = 'initial_' #'rot180_'
 macros = { # folder, label, colour.
-    0: ['initial_00', '00', 'red'],
-    1: ['initial_02', '02', 'blue'],
-    2: ['initial_05', '05', 'green'],
-    3: ['initial_06', '06', 'yellow'],
-    4: ['initial_07', '07', 'purple'],
-    5: ['initial_08', '08', 'grey']
+    0: [test_name + '00', '00', 'red'],
+    1: [test_name + '02', '02', 'blue'],
+    2: [test_name + '05', '05', 'green'],
+    3: [test_name + '06', '06', 'yellow'],
+    4: [test_name + '07', '07', 'purple'],
+    5: [test_name + '08', '08', 'grey'],
 }
 
 ########################################################################################################################
