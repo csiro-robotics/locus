@@ -52,9 +52,17 @@ database_dict = {'segments_database': segments_database,
 
 
 for query_idx in tqdm(range(num_queries)):
+    # Load LiDAR scan point cloud
     scan = next(scans)
     scan = scan[:, :-1]
-    if args.aug_type != 'none':
+
+    # Optional scan augmentation for robustness tests
+    if args.aug_type == 'rot':
+        scan, rot_mat = augmented_scan(scan, args.aug_type, args.aug_param)
+        transforms[query_idx][:3,:3] = np.dot(transforms[query_idx][:3,:3], rot_mat)
+        if query_idx > 0:
+            database_dict['rel_transforms'][query_idx-1] = get_delta_pose([transforms[query_idx-1], transforms[query_idx]])[0]
+    elif args.aug_type == 'occ':
         scan = augmented_scan(scan, args.aug_type, args.aug_param)
 
     # Extract segments

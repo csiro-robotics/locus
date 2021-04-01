@@ -23,7 +23,7 @@ def random_rotate_scan(scan, r_angle, is_random = True):
                                 [0,             0,      1]])
     augmented_scan = np.dot(scan, rot_matrix)
 
-    return np.asarray(augmented_scan, dtype=np.float32)
+    return np.asarray(augmented_scan, dtype=np.float32), rot_matrix
 
 def downsample_scan(scan, voxel_size):
     pcd = o3d.geometry.PointCloud()
@@ -82,5 +82,5 @@ if __name__ == "__main__":
         print('Scan ID: ', i)
         visualize_scan_open3d(scan)
         visualize_scan_open3d(augmented_scan(scan, 'occ', 90))
-        visualize_scan_open3d(augmented_scan(scan, 'rot', np.pi))
+        visualize_scan_open3d(augmented_scan(scan, 'rot', 180)[0])
         visualize_scan_open3d(augmented_scan(scan, 'ds', 0.5))
