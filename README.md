@@ -1,7 +1,11 @@
 # Locus
 
 
-This repository is an open-source implementation of the ICRA 2021 paper: [Locus: LiDAR-based Place Recognition using Spatiotemporal Higher-Order Pooling](https://arxiv.org/abs/2011.14497).
+This repository is an open-source implementation of the ICRA 2021 paper: [Locus: LiDAR-based Place Recognition using Spatiotemporal Higher-Order Pooling](https://arxiv.org/abs/2011.14497). 
+
+More information: https://research.csiro.au/robotics/locus-pr/
+
+Paper Pre-print: https://arxiv.org/abs/2011.14497
 
 ## Method overview.
 *Locus* is a global descriptor for large-scale place recognition using sequential 3D LiDAR point clouds. It encodes topological relationships and temporal consistency of scene components to obtain a discriminative and view-point invariant scene representation.
