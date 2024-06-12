@@ -89,7 +89,7 @@ for query_idx in tqdm(range(num_queries)):
         if (np.shape(db_seen_descriptors)[0] < nn):
             nn = np.shape(db_seen_descriptors)[0]
 
-        dist, ind = tree.query(vlad, k=nn) 
+        dist, ind = tree.query(locus_descriptor, k=nn) 
         nns = np.shape(dist)[1]
 
     # Find top-1 candidate.
